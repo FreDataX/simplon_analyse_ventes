@@ -24,7 +24,7 @@ Ce projet est une application d'analyse des ventes développée dans le cadre de
 
 1. Clonez le dépôt :
    ```bash
-   git clone https://github.com/votre-utilisateur/simplon_analyse_ventes.git
+   git clone https://github.com/FreDataX/simplon_analyse_ventes.git
    cd simplon_analyse_ventes
 
 2. Lancez les conteneurs avec Docker Compose : 
