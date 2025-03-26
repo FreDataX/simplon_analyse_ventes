@@ -36,9 +36,8 @@ Ce projet est une application d'analyse des ventes développée dans le cadre de
    docker exec -it scripts-service sqlite3 /app/database/database.db
    SELECT * FROM resultats_analyses;
    
-4. Vérifier les logs ert la description des données: 
+4. Vérifier les logs et la description des données : 
    ```bash
-   cd simplon_analyse_ventes
    docker logs scripts-service
 
 ## Fonctionnalités
