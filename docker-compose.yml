@@ -1,0 +1,19 @@
+services:
+  sqlite:
+    image: nouchka/sqlite3:latest
+    container_name: db-service
+    stdin_open: true
+    tty: true
+    volumes:
+      - ./database:/root/db
+
+  scripts:
+    build: ./scripts
+    container_name: scripts-service
+    volumes:
+      - ./scripts:/app/scripts
+      - ./data:/app/data
+      - ./database:/app/database
+    depends_on:
+      - sqlite
+    command: sh -c "python main.py && tail -f /dev/null"

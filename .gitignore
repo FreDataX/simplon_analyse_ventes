@@ -1,0 +1,14 @@
+# Fichiers et répertoires à ignorer
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+.env
+*.db
+*.sqlite
+data/
+database/
+*.log
