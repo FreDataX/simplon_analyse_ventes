@@ -25,6 +25,21 @@ class Analyzer:
         self.db_manager.conn.commit()
         
         # Chiffre d'affaires total
+        self._analyze_total_revenue()
+
+        # Ventes par produit
+        self._analyze_sales_by_product()
+
+        # Ventes par région
+        self._analyze_sales_by_region()
+
+        # Nouvelle analyse : Quantité moyenne vendue par produit par magasin
+        self._analyze_avg_quantity_by_product_and_store()
+
+        self.db_manager.conn.commit()
+
+    def _analyze_total_revenue(self) -> None:
+        """Calcule le chiffre d'affaires total et stocke le résultat."""
         self.cursor.execute('''
         SELECT SUM(v.quantite * p.prix) AS total
         FROM ventes v
@@ -36,7 +51,8 @@ class Analyzer:
             ('chiffre_affaires_total', str(total_ca))
         )
 
-        # Ventes par produit
+    def _analyze_sales_by_product(self) -> None:
+        """Calcule les ventes totales par produit et stocke les résultats."""
         self.cursor.execute('''
         SELECT p.nom, SUM(v.quantite) AS quantite_totale
         FROM ventes v
@@ -52,7 +68,8 @@ class Analyzer:
                 ('ventes_par_produit', f'{nom_produit}: {quantite_totale}')
             )
 
-        # Ventes par région
+    def _analyze_sales_by_region(self) -> None:
+        """Calcule les ventes totales par région et stocke les résultats."""
         self.cursor.execute('''
         SELECT m.ville, SUM(v.quantite * p.prix) AS total
         FROM ventes v
@@ -69,4 +86,23 @@ class Analyzer:
                 ('ventes_par_region', f'{ville}: {total}')
             )
 
-        self.db_manager.conn.commit()
+    def _analyze_avg_quantity_by_product_and_store(self) -> None:
+        """
+        Calcule la quantité moyenne vendue par produit par magasin et stocke les résultats.
+        """
+        self.cursor.execute('''
+        SELECT p.nom, m.ville, AVG(v.quantite) AS quantite_moyenne
+        FROM ventes v
+        JOIN produits p ON v.produit_id = p.id
+        JOIN magasins m ON v.magasin_id = m.id
+        GROUP BY p.nom, m.ville
+        ''')
+        for row in self.cursor.fetchall():
+            nom_produit: str
+            ville: str
+            quantite_moyenne: float
+            nom_produit, ville, quantite_moyenne = row
+            self.cursor.execute(
+                'INSERT INTO resultats_analyses (type_analyse, valeur) VALUES (?, ?)',
+                ('quantite_moyenne_par_produit_par_magasin', f'{nom_produit} - {ville}: {quantite_moyenne}')
+            )
